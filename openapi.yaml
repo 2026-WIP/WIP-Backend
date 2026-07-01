@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: WIP Backend API
+  version: 0.1.0
+  description: Minimal OpenAPI spec for WIP (auth, channels, messages, snippets, runner)
+
+servers:
+  - url: http://localhost:3000/api
+
+paths:
+  /auth/signup:
+    post:
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: Created
+
+  /auth/login:
+    post:
+      summary: Login (sets HttpOnly cookie)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: OK
+
+  /channels:
+    get:
+      summary: List channels
+      responses:
+        '200':
+          description: OK
+
+  /channels/{id}/messages:
+    get:
+      summary: Get messages for a channel
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+
+  /messages:
+    post:
+      summary: Create message
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channelId: { type: string }
+                content: { type: string }
+                codeBlocks:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      language: { type: string }
+                      fileName: { type: string }
+                      code: { type: string }
+      responses:
+        '201':
+          description: Created
+
+  /snippets:
+    get:
+      summary: List user's snippets
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Create snippet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                language: { type: string }
+                fileName: { type: string }
+                code: { type: string }
+                tags: { type: array, items: { type: string } }
+      responses:
+        '201':
+          description: Created
+
+  /runner/execute:
+    post:
+      summary: Execute code in sandbox (async)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                language: { type: string }
+                code: { type: string }
+                timeoutMs: { type: integer }
+      responses:
+        '202':
+          description: Accepted
