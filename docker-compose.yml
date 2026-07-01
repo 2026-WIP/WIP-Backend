@@ -1,0 +1,23 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: wip-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: wip_dev
+      MYSQL_USER: wip
+      MYSQL_PASSWORD: wip_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - wip_mysql_data:/var/lib/mysql
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -pexample"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  wip_mysql_data:

@@ -1,0 +1,31 @@
+{
+  "name": "wip-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "db:local": "powershell -ExecutionPolicy Bypass -File scripts/start-local-mysql.ps1",
+    "dev": "npm run db:local && tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "npm run db:local && npm run build && node dist/server.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.22.4",
+    "socket.io": "^4.8.3",
+    "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.12.3",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}
