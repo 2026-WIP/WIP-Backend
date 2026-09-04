@@ -214,11 +214,15 @@ function signToken(user: User) {
   return jwt.sign({ sub: user.id, email: user.email, sid: serverSessionId }, jwtSecret, { expiresIn: '7d' });
 }
 
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: isProduction ? 'none' as const : 'lax' as const,
+  secure: isProduction,
+};
+
 function setAccessCookie(res: Response, user: User) {
   res.cookie('wip_token', signToken(user), {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: isProduction,
+    ...cookieOptions,
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 }
@@ -234,9 +238,7 @@ async function setAuthCookie(res: Response, user: User) {
 
   setAccessCookie(res, user);
   res.cookie('wip_refresh', refreshToken, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: isProduction,
+    ...cookieOptions,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30일
   });
 }
@@ -1302,7 +1304,7 @@ httpServer.on('error', (error: NodeJS.ErrnoException) => {
   console.error('WIP backend failed to start:', error);
 });
 
-httpServer.listen(port, () => {
+httpServer.listen(port, '0.0.0.0', () => {
   console.log(`WIP backend listening on http://localhost:${port}`);
   if (hasFrontend) {
     console.log(`  → Frontend served from ${frontendDist}`);
